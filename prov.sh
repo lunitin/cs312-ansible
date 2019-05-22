@@ -4,10 +4,13 @@
 PASS="password"
 
 # Generate ssh key
-ssh-keygen -t rsa -f id_rsa -b 2096 -N ''
+echo -e "Generating SSH key..."
+KEYGEN=$(ssh-keygen -t rsa -f id_rsa -b 2096 -N '')
+echo "Done"
 
+echo "Creating Ansible support files..."
 # Set up core hosts.ini file
-cat <<EOF
+cat << EOF > hosts.ini
 [mynodes]
 192.168.1.20
 
@@ -16,10 +19,10 @@ ansible_connection=ssh
 ansible_port=22
 ansible_user=root
 ansible_python_interpreter=/usr/bin/python3
-EOF > hosts.ini
+EOF
 
 # Set up index.html file
-cat <<EOF
+cat << EOF > index.html
 <html>
 <head><title>My Test Page</title></head>
 <body>
@@ -27,10 +30,10 @@ cat <<EOF
 <p>This page was last provisioned on {{ template_run_date }}</p>
 </body>
 </html>
-EOF > index.html
+EOF
 
 # Set up Ansible Playbook
-cat <<EOF
+cat << EOF > web.yaml
 ---
 - hosts: mynodes
   gather_facts: no
@@ -57,20 +60,22 @@ cat <<EOF
       service:
         name: apache2
         state: restarted
-EOF > web.yaml
+EOF
  
 
 # Provision Web servers
+echo -e "Deploying SSH keys..."
 for i in {0..0}; do
 	ssh-keyscan 192.168.1.2${i} >> ~/.ssh/known_hosts
 	echo "${PASS}" | sshpass ssh-copy-id root@192.168.1.2${i}
 done
+echo "Done"
 
 
 ansible-playbook web.yaml -i ./hosts.ini
 
 
-echo "Fetching results"
+echo "Fetching HTTP results"
 for i in {0..0}; do
 	curl http://192.168.1.2${i}
 done
