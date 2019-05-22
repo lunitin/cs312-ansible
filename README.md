@@ -23,8 +23,11 @@ results.txt - Dump of the expected output from prov.sh
 * Start up pfSense Router VM
 * Start up CentOS CLI VM
 * Start up 4 Alpine Reference VMs
+
 * Copy & uncompress zip file into Centos CLI VM
+
 **or**
+
 * git clone https://github.com/lunitin/cs312-ansible.git
 
 
