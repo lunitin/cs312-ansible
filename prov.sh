@@ -5,12 +5,19 @@ PASS="password"
 # Check for server availability
 echo -e "\n\e[35m=== Network Tests...\e[0m"
 for i in {20..23}; do
-	UP=$(ping -c 1 192.168.1.${i})
+	UP=$(ping -c 1 -W 2 192.168.1.${i})
 	if [ $? -ne 0 ]; then
-		echo "  \e[31m= 192.168.1.${i} appears to be down, check networking\e[0m"
+		echo -e "  \e[31m= 192.168.1.${i} is down, check networking/VM.\e[0m"
 		exit 1
 	else 
-		echo -e "  \e[32m= 192.168.1.${i} is up\e[0m"
+		# Secondary check for SSH (just incase alpine fails to boot)
+		UP=$((echo > /dev/tcp/192.168.1.${i}/22) > /dev/null 2>&1 )
+		if [ $? -ne 0 ]; then
+			echo -e "  \e[31m= 192.168.1.${i} does not respond to SSH, check the VM.\e[0m"
+			exit 1
+		else 
+			echo -e "  \e[32m= 192.168.1.${i} is up\e[0m"
+		fi
 	fi
 done
 
