@@ -1,11 +1,11 @@
 #!/bin/bash
 
-
 PASS="password"
+
 
 # Generate ssh key
 echo -e "Generating SSH key..."
-KEYGEN=$(ssh-keygen -t rsa -f id_rsa -b 2096 -N '')
+KEYGEN=$(ssh-keygen -t rsa -b 2048 -N '')
 echo "Done"
 
 echo "Creating Ansible support files..."
@@ -13,6 +13,9 @@ echo "Creating Ansible support files..."
 cat << EOF > hosts.ini
 [mynodes]
 192.168.1.20
+192.168.1.21
+192.168.1.22
+192.168.1.23
 
 [mynodes:vars]
 ansible_connection=ssh
@@ -65,17 +68,20 @@ EOF
 
 # Provision Web servers
 echo -e "Deploying SSH keys..."
-for i in {0..0}; do
+for i in {0..3}; do
 	ssh-keyscan 192.168.1.2${i} >> ~/.ssh/known_hosts
-	echo "${PASS}" | sshpass ssh-copy-id root@192.168.1.2${i}
+	echo "${PASS}" | sshpass ssh-copy-id root@192.168.1.2${i} > /dev/null 2>&1
 done
 echo "Done"
 
-
+echo "Executing Ansible Playbook..."
 ansible-playbook web.yaml -i ./hosts.ini
 
 
-echo "Fetching HTTP results"
-for i in {0..0}; do
+for i in {0..3}; do
+	echo "Fetching HTTP results from 192.168.1.2${i}"
 	curl http://192.168.1.2${i}
 done
+
+echo "Cleaning up temporary files"
+rm -rf hosts.ini index.html web.yaml
