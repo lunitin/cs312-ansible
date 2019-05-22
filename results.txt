@@ -1,0 +1,108 @@
+
+[35m=== Network Tests...[0m
+  [32m= 192.168.1.20 is up[0m
+  [32m= 192.168.1.21 is up[0m
+  [32m= 192.168.1.22 is up[0m
+  [32m= 192.168.1.23 is up[0m
+
+[35m=== Generating SSH key...[0m
+Generating public/private rsa key pair.
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:GXpUFKiZrDPlNMeh6mnfBCSk4h/JeaWwSnPTUcQVWxA root@localhost.localdomain
+The key's randomart image is:
++---[RSA 2048]----+
+|    . oo.EBo     |
+|   o  ..o.o      |
+|. ...o.Boo       |
+|... *o&ooo       |
+| + O XooS        |
+|. = O .o         |
+| . o +  .        |
+|    +  o         |
+|   . .. .        |
++----[SHA256]-----+
+
+[35m=== Deploying SSH keys...[0m
+
+[35m=== Executing Ansible Playbook...[0m
+
+PLAY [mynodes] *****************************************************************
+
+TASK [Install Python 3] ********************************************************
+changed: [192.168.1.22]
+changed: [192.168.1.23]
+changed: [192.168.1.20]
+changed: [192.168.1.21]
+
+TASK [Install/Update Apache] ***************************************************
+ok: [192.168.1.23]
+ok: [192.168.1.22]
+ok: [192.168.1.21]
+ok: [192.168.1.20]
+
+TASK [Copy in index.html] ******************************************************
+changed: [192.168.1.23]
+changed: [192.168.1.22]
+changed: [192.168.1.20]
+changed: [192.168.1.21]
+
+TASK [Fire up Apache] **********************************************************
+ok: [192.168.1.23]
+ok: [192.168.1.22]
+ok: [192.168.1.20]
+ok: [192.168.1.21]
+
+RUNNING HANDLER [restart apache] ***********************************************
+changed: [192.168.1.23]
+changed: [192.168.1.22]
+changed: [192.168.1.20]
+changed: [192.168.1.21]
+
+PLAY RECAP *********************************************************************
+192.168.1.20               : ok=5    changed=3    unreachable=0    failed=0   
+192.168.1.21               : ok=5    changed=3    unreachable=0    failed=0   
+192.168.1.22               : ok=5    changed=3    unreachable=0    failed=0   
+192.168.1.23               : ok=5    changed=3    unreachable=0    failed=0   
+
+
+[35m=== Fetching HTTP results from 192.168.1.20
+[0m
+<html>
+<head><title>My Test Page</title></head>
+<body>
+<p>TEST PAGE</p>
+<p>This page was last provisioned on 2019-05-21 23:12:22.368581</p>
+</body>
+</html>
+
+[35m=== Fetching HTTP results from 192.168.1.21
+[0m
+<html>
+<head><title>My Test Page</title></head>
+<body>
+<p>TEST PAGE</p>
+<p>This page was last provisioned on 2019-05-21 23:12:22.407744</p>
+</body>
+</html>
+
+[35m=== Fetching HTTP results from 192.168.1.22
+[0m
+<html>
+<head><title>My Test Page</title></head>
+<body>
+<p>TEST PAGE</p>
+<p>This page was last provisioned on 2019-05-21 23:12:22.476600</p>
+</body>
+</html>
+
+[35m=== Fetching HTTP results from 192.168.1.23
+[0m
+<html>
+<head><title>My Test Page</title></head>
+<body>
+<p>TEST PAGE</p>
+<p>This page was last provisioned on 2019-05-21 23:12:22.459349</p>
+</body>
+</html>
